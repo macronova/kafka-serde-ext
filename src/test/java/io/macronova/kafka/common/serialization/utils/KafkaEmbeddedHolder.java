@@ -21,10 +21,14 @@ import org.springframework.kafka.test.rule.KafkaEmbedded;
 public class KafkaEmbeddedHolder {
 	private static KafkaEmbedded kafkaEmbedded = null;
 	private static boolean started = false;
+	private static int topicId = 0;
+	private static String topicPrefix = "topic";
 
 	public static KafkaEmbedded getKafkaEmbedded() {
 		if ( ! started ) {
 			try {
+				// Every integration test will work on separate Kafka topic.
+				++topicId;
 				kafkaEmbedded = new KafkaEmbedded( 1, false, topicName() );
 				kafkaEmbedded.setKafkaPorts( 9092 );
 				kafkaEmbedded.before();
@@ -51,7 +55,7 @@ public class KafkaEmbeddedHolder {
 	}
 
 	public static String topicName() {
-		return "topic1";
+		return topicPrefix + topicId;
 	}
 
 	private KafkaEmbeddedHolder() {

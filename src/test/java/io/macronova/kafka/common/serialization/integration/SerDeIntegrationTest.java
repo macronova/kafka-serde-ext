@@ -20,14 +20,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import io.macronova.kafka.common.serialization.BaseTestCase;
 import io.macronova.kafka.common.serialization.ReverseBytesSerDe;
 import io.macronova.kafka.common.serialization.utils.KafkaEmbeddedHolder;
+import io.macronova.kafka.common.serialization.utils.TestCondition;
 import io.macronova.kafka.common.serialization.utils.TestUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -47,15 +48,15 @@ import org.springframework.kafka.test.rule.KafkaEmbedded;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 
 public class SerDeIntegrationTest extends BaseTestCase {
-	private static KafkaEmbedded embeddedKafka = null;
+	private KafkaEmbedded embeddedKafka = null;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		embeddedKafka = KafkaEmbeddedHolder.getKafkaEmbedded();
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		KafkaEmbeddedHolder.destroy();
 		embeddedKafka = null;
 	}
@@ -289,19 +290,33 @@ public class SerDeIntegrationTest extends BaseTestCase {
 		}
 		finally {
 			consumer.close();
-			// Confirm offset so that following tests do not report incorrect failures.
-			consumeRecords( Collections.emptyMap() );
 		}
 	}
 
-	private void checkSerializerDeserializer(Map<String, Object> producerConfig, Map<String, Object> consumerConfig) throws Exception {
+	private void checkSerializerDeserializer(Map<String, Object> producerConfig, final Map<String, Object> consumerConfig) throws Exception {
 		final String message = "Hello, World!";
 
 		produceRecords( producerConfig, message );
-		final ConsumerRecords<Integer, String> records = consumeRecords( consumerConfig );
+		final StringBuilder consumedMessage = new StringBuilder();
 
-		Assert.assertEquals( 1, records.count() );
-		Assert.assertEquals( message, records.iterator().next().value() );
+		TestUtils.waitForCondition(
+			new TestCondition() {
+				public boolean conditionMet() {
+					try {
+						ConsumerRecords<Integer, String> records = consumeRecords( consumerConfig );
+						if ( records.count() == 1 ) {
+							consumedMessage.append( records.iterator().next().value() );
+							return true;
+						}
+						return false;
+					}
+					catch ( Exception e ) {
+						throw new RuntimeException( e );
+					}
+				}
+			}, 5000L, "Did not consume expected records."
+		);
+		Assert.assertEquals( message, consumedMessage.toString() );
 	}
 
 	@SafeVarargs
@@ -334,7 +349,7 @@ public class SerDeIntegrationTest extends BaseTestCase {
 			final ConsumerFactory<K, V> cf = new DefaultKafkaConsumerFactory<>( consumerProps );
 			consumer = cf.createConsumer();
 			embeddedKafka.consumeFromAnEmbeddedTopic( consumer, KafkaEmbeddedHolder.topicName() );
-			return KafkaTestUtils.getRecords( consumer, 100 );
+			return KafkaTestUtils.getRecords( consumer, 500 );
 		}
 		finally {
 			if ( consumer != null ) {

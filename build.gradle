@@ -87,6 +87,7 @@ publishing {
 				password project.hasProperty( 'ossrhPassword' ) ? project.property( 'ossrhPassword' ) : ''
 			}
 			url = version.endsWith('SNAPSHOT') ? "$buildDir/repos/snapshots" : "$buildDir/repos/releases"
+			// url = version.endsWith('SNAPSHOT') ? "https://oss.sonatype.org/content/repositories/snapshots/" : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 		}
 	}
 }
@@ -119,6 +120,10 @@ task zip(type: Zip) {
 	from configurations.runtime.allArtifacts.files
 	from configurations.runtime
 	into (project.name + '-' + project.version)
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '4.10.2'
 }
 
 idea {

@@ -24,10 +24,6 @@ import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigException;
 import org.apache.kafka.common.config.types.Password;
 
-// TODO: Travis CI. Publish on GitHub and Maven. Other status icons like: https://github.com/lettuce-io/lettuce-core.
-// TODO: http://mike-neck.github.io/blog/2013/06/21/how-to-publish-artifacts-with-gradle-maven-publish-plugin-version-1-dot-6/
-// TODO: https://central.sonatype.org/pages/ossrh-guide.html
-// TODO: https://medium.com/@scottyab/how-to-publish-your-open-source-library-to-maven-central-5178d9579c5
 public abstract class BaseEncryptConfig extends AbstractConfig {
 	public static final String TRANSFORMATION_CONFIG = "transformation";
 	public static final String TRANSFORMATION_DOC = "Cryptography transformation that consists " +
