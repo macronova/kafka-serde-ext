@@ -1,6 +1,6 @@
 # Kafka SerDe Extensions
 
-[![Build Status](https://travis-ci.org/macronova/kafka-serde-ext.svg)](https://travis-ci.org/macronova/kafka-serde-ext) [![Code Coverage](https://codecov.io/gh/macronova/kafka-serde-ext/branch/master/graph/badge.svg)](https://codecov.io/gh/macronova/kafka-serde-ext) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/macronova/kafka-serde-ext/badge.svg)](https://maven-badges.herokuapp.com/maven-central/macronova/kafak-serde-ext)
+[![Build Status](https://travis-ci.org/macronova/kafka-serde-ext.svg)](https://travis-ci.org/macronova/kafka-serde-ext) [![Code Coverage](https://codecov.io/gh/macronova/kafka-serde-ext/branch/master/graph/badge.svg)](https://codecov.io/gh/macronova/kafka-serde-ext) [![Maven Central](https://img.shields.io/maven-central/v/io.macronova.kafka/kafka-serde-ext/1.svg)](http://central.maven.org/maven2/io/macronova/kafka/kafka-serde-ext/1.0.0)
 
 Porpose of the project is to create extensions to default set of [serializers](https://kafka.apache.org/11/javadoc/org/apache/kafka/common/serialization/Serializer.html)
 and [deserializers](https://kafka.apache.org/11/javadoc/org/apache/kafka/common/serialization/Deserializer.html) provided by Apache Kafka.
